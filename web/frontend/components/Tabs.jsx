@@ -4,6 +4,7 @@ import {
     LegacyCard
   } from "@shopify/polaris";
   import GuideTable from "./GuideTable";
+  import PopupSetup from "./PopupSetup";
 
 export default function MainTabs(props) {
 

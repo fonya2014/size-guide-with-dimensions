@@ -1,24 +1,38 @@
 import React, { useState } from 'react';
 import {
-    Form, FormLayout,
-    DataTable,
-    Button
-  } from "@shopify/polaris";
+  Form, FormLayout,
+  DataTable,
+  Button
+} from "@shopify/polaris";
 
-  import {SelectTypeRender} from "./SelectTypeRender";
-  import {SelectNameRender} from "./SelectNameRender";
-  import {TextFieldRender} from "./textFieldRender";
+import { SelectTypeRender } from "./SelectTypeRender";
+import { SelectNameRender } from "./SelectNameRender";
+import { TextFieldRender } from "./textFieldRender";
 
-  export default function AddGuideForm(props) {
+export default function AddGuideForm(props) {
 
-    //const parsedMetafield = parseMetafield(props.data.dbResult.body.data.appInstallation.metafield);
+  //const parsedMetafield = parseMetafield(props.data.dbResult.body.data.appInstallation.metafield);
   //const [settings, setSettings] = useState(parsedMetafield);
 
   const [settings, setSettings] = useState({
-    type:"body",
-    name:"Sleeve length",
-    size_literal: "M",
-    size_numeric: "38",
+    guides: [
+      {
+        type: "body",
+        name: "Sleeve length",
+        size_literal: "M",
+        size_numeric: "38",
+        dimention_cm: "46",
+        dimention_inches: "18.15"
+      },
+      {
+        type: "head",
+        name: "Head circumstances",
+        size_literal: "S",
+        size_numeric: "30",
+        dimention_cm: "23",
+        dimention_inches: "10"
+      }
+    ]
   });
 
   const handleSelectTypeChange = (e) => {
@@ -42,7 +56,7 @@ import {
   }
 
   const handleSizeNumericChange = (e, index) => {
-    const reSizeNumeric = /^[0-9, ]*$/;
+    const reSizeNumeric = /^[0-9,. ]*$/;
     const fieldName = e.target.name;
     let fieldValue = e.target.value;
     if (reSizeNumeric.test(fieldValue)) {
@@ -53,49 +67,65 @@ import {
     }
   }
 
-  const rows = [
-    [
-
-    <SelectTypeRender name="guide_type" label="Type" selected={settings.type} onchange={handleSelectTypeChange} />,
-
-    <SelectNameRender name="guide_name" label="Name" type={settings.type} selected={settings.name} onchange={handleSelectNameChange} />,
-
-    <div className="inputsOneCol">
-    <TextFieldRender name="size_literal" placeholder="M" value={settings.size_literal} oninput={(e) => handleSizeLiteralChange(e, index)} />
-    <TextFieldRender name="size_numeric" placeholder="38" value={settings.size_numeric} oninput={(e) => handleSizeNumericChange(e, index)} />
-    </div>,
-
-    <div className="inputsOneCol">
-    <TextFieldRender name="dimention_cm" placeholder="46" value={settings.dimention_cm} oninput={(e) => handleSizeLiteralChange(e, index)} />
-    <TextFieldRender name="dimention_inches" placeholder="18,1102" value={settings.size_numeric} oninput={(e) => handleSizeNumericChange(e, index)} />
-    </div>,
-
-    <Button>Remove</Button>
-  ]
-  ];
-
-    return (
-        <Form /*onSubmit={handleSubmit}*/>
-                <FormLayout>
-                <DataTable
-                columnContentTypes={[
-                  'text',
-                  'text',
-                  'text',
-                  'text',
-                  'text'
-                ]}
-                headings={[
-                  'Type',
-                  'Name',
-                  'Size',
-                  'Dimensions',
-                  ''
-                ]}
-                rows={rows}
-              />
-
-                </FormLayout>
-        </Form>
-    );
+  const handleAddRow = () => {
+    setSettings({
+      ...settings, guides: [...settings.guides, {
+        type: "body",
+        name: "Sleeve length",
+        size_literal: "",
+        size_numeric: "",
+        dimention_cm: "",
+        dimention_inches: ""
+      }]
+    });
   }
+
+  const handleRemoveRow = (index) => {
+    settings.guides.splice(index, 1);
+    setSettings({ guides: settings.guides });
+  }
+
+  const rows =
+    settings.guides?.map((guide) => {
+      return [
+        <SelectTypeRender name="guide_type" label="Type" selected={guide.type} onchange={handleSelectTypeChange} />,
+        <SelectNameRender name="guide_name" label="Name" type={guide.type} selected={settings.name} onchange={handleSelectNameChange} />,
+        <div className="inputsOneCol">
+          <TextFieldRender name="size_literal" placeholder="M" value={guide.size_literal} oninput={(e) => handleSizeLiteralChange(e, index)} isDisabled={false} />
+          <TextFieldRender name="size_numeric" placeholder="38" value={guide.size_numeric} oninput={(e) => handleSizeNumericChange(e, index)} isDisabled={false} />
+        </div>,
+        <div className="inputsOneCol">
+          <TextFieldRender name="dimention_cm" placeholder="46" value={guide.dimention_cm} oninput={(e) => handleSizeLiteralChange(e, index)} isDisabled={false} label="cm" />
+          <TextFieldRender name="dimention_inches" placeholder="18,1102" value={guide.dimention_inches} oninput={(e) => handleSizeNumericChange(e, index)} isDisabled={true} label="inches" />
+        </div>,
+        <Button onClick={handleRemoveRow}>Remove</Button>
+      ];
+    });
+
+  rows.push([<Button onClick={handleAddRow}>Add row</Button>]);
+
+  return (
+    <Form /*onSubmit={handleSubmit}*/>
+      <FormLayout>
+        <DataTable
+          columnContentTypes={[
+            'text',
+            'text',
+            'text',
+            'text',
+            'text'
+          ]}
+          headings={[
+            'Type',
+            'Name',
+            'Size',
+            'Dimensions',
+            ''
+          ]}
+          rows={rows}
+        />
+        <Button primary>Save</Button>
+      </FormLayout>
+    </Form>
+  );
+}

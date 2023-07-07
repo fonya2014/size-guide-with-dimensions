@@ -9,6 +9,7 @@ export function TextFieldRender(props) {
       value={props.value}
       onInput={props.oninput}
       placeholder={props.placeholder}
+      disabled={props.isDisabled} 
     />
     <span>{props.label}</span>
   </label>
