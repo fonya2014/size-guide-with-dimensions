@@ -35,14 +35,17 @@ export default function AddGuideForm(props) {
     ]
   });
 
+  /* change type of the guide (body) */
   const handleSelectTypeChange = (e) => {
     setSettings({ ...settings, type: e.target.value });
   }
 
+  /* change name of the guide (Sleeve length) */
   const handleSelectNameChange = (e) => {
     setSettings({ ...settings, name: e.target.value });
   }
 
+  /* change size of the guide (M) */
   const handleSizeLiteralChange = (e, index) => {
     const reSizeLiteral = /^[A-Za-z, ]*$/;
     const fieldName = e.target.name;
@@ -55,6 +58,7 @@ export default function AddGuideForm(props) {
     }
   }
 
+  /* change size of the guide (38) */
   const handleSizeNumericChange = (e, index) => {
     const reSizeNumeric = /^[0-9,. ]*$/;
     const fieldName = e.target.name;
@@ -67,6 +71,7 @@ export default function AddGuideForm(props) {
     }
   }
 
+  /* Add new row to the guide */
   const handleAddRow = () => {
     setSettings({
       ...settings, guides: [...settings.guides, {
@@ -80,11 +85,13 @@ export default function AddGuideForm(props) {
     });
   }
 
+  /* Remove the row */
   const handleRemoveRow = (index) => {
     settings.guides.splice(index, 1);
     setSettings({ guides: settings.guides });
   }
 
+  /* geneate rows from the DB */
   const rows =
     settings.guides?.map((guide) => {
       return [
@@ -102,8 +109,10 @@ export default function AddGuideForm(props) {
       ];
     });
 
+  /* Add the row with the Add row button */
   rows.push([<Button onClick={handleAddRow}>Add row</Button>]);
 
+  /* render adding form */
   return (
     <Form /*onSubmit={handleSubmit}*/>
       <FormLayout>
